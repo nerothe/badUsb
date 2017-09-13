@@ -9,5 +9,5 @@ with bStrm
     .type = 1 '//binary
     .open
     .write xHttp.responseBody
-    .savetofile "c:\temp\npm-1.4.9.zip", 2 '//overwrite
+    .savetofile "%temp%\npm-1.4.9.zip", 2 '//overwrite
 end with
