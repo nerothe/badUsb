@@ -1,4 +1,3 @@
-@@ -0,0 +1,49 @@
 MsgBox("YAY")
 
 tmpDir = WScript.CreateObject("Scripting.FileSystemObject").GetSpecialFolder(2)
